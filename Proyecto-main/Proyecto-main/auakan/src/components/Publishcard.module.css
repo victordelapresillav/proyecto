@@ -1,16 +1,22 @@
 .publishcard {
     list-style: none;
     font-size: 1.5rem;
-    text-align: center;
+    text-align: center; 
 }
 
 .publishcard:hover{
     opacity: 0.8;
+    transform: scale(1.2);
+    
 }
 
 .publishimage {
     border-radius: 10px;
     background-color: azure;
+    box-shadow: 0 0 30px white; 
+}
+.publishimage:hover{
+    box-shadow: 0 0 30px rgb(230, 92, 92);
 }
 
 @media (max-width: 560px) {
@@ -19,4 +25,28 @@
         height: auto;
     }
 }
+/**/
+.publicimage{
+    border-radius: 15px;
+}
 
+.pubdet{
+    font-size: 1.5rem;
+}
+
+.firstItem{
+    margin-top: 0;
+}
+.leyendas{
+    font-size: 1.8rem;
+}
+
+.botonescontainer{
+    font-size: 1.8rem;
+    margin: 20px;
+    justify-content: center;
+    text-align: center;
+    border-radius: 30px;
+    width: 90%;
+    height:50px;
+}

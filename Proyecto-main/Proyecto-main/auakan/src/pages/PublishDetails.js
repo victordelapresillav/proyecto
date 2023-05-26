@@ -3,13 +3,10 @@ import { useParams } from "react-router-dom";
 import { fetchData } from "../Util/Client";
 import styles from "./PublishDetails.module.css";
 import BotonPublicar from "../components/BotonPublicar";
-
 export function PublishDetails() {
-
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [item, setItem] = useState(null);
-  console.log()
   useEffect(() => {
     fetchData()
       .then((result) => {
@@ -24,7 +21,6 @@ export function PublishDetails() {
         console.error("Error fetching data:", error);
       });
   }, [id]);
-
   const handlePublicar = (itemId) => {
     const updatedData = data.map((item) => {
       if (item.id === itemId) {
@@ -38,7 +34,6 @@ export function PublishDetails() {
     });
     setData(updatedData);
   };
-
   const handleRetirar = (itemId) => {
     const updatedData = data.map((item) => {
       if (item.id === itemId) {
@@ -52,37 +47,44 @@ export function PublishDetails() {
     });
     setData(updatedData);
   };
-
   return (
     <div className={styles.DetailsContainer}>
-      {data.map((item) => (
-        <div key={item.id} className={styles.cardContainer}>
-          <img className={styles.publicimage} src={item.fotografia_prod} alt={item.nombre} />
-          <div className={styles.pubdet}>
-            <p className={styles.firstItem}>
-              <strong>Producto: </strong>
-              {item.nombre_prod}
-            </p>
-            <p>
-              <strong>Detalles del producto: </strong>
-              {item.detalles_prod}
-            </p>
-            <p>
-              <strong>Nombre del vendedor: </strong>
-              {item.nombre}
-            </p>
+      {data.map((item) => {
+        let imageUrls = item.fotografia_prod;
+        // Convertir la cadena en un array de URLs
+        if (typeof imageUrls === "string") {
+          imageUrls = JSON.parse(imageUrls);
+        }
+        return (
+          <div key={item.id} className={styles.cardContainer}>
+            {imageUrls.map((imageUrl, index) => (
+              <img key={index} className={styles.publicimage} src={imageUrl} alt={item.nombre} />
+            ))}
+            <div className={styles.pubdet}>
+              <p className={styles.firstItem}>
+                <strong>Producto: </strong>
+                {item.nombre_prod}
+              </p>
+              <p>
+                <strong>Detalles del producto: </strong>
+                {item.detalles_prod}
+              </p>
+              <p>
+                <strong>Nombre del vendedor: </strong>
+                {item.nombre}
+              </p>
+            </div>
+            <div>
+              <BotonPublicar
+                tarjetaId={item.id}
+                publicado={item.publicado}
+                onPublicar={handlePublicar}
+                onRetirar={handleRetirar}
+              />
+            </div>
           </div>
-          <div>
-            <BotonPublicar
-              tarjetaId={item.id}
-              publicado={item.publicado}
-              onPublicar={handlePublicar}
-              onRetirar={handleRetirar}
-            />
-          </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
-//export default item;
