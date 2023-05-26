@@ -1,0 +1,22 @@
+.publishcard {
+    list-style: none;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.publishcard:hover{
+    opacity: 0.8;
+}
+
+.publishimage {
+    border-radius: 10px;
+    background-color: azure;
+}
+
+@media (max-width: 560px) {
+    .publishimage {
+        width: 90%;
+        height: auto;
+    }
+}
+

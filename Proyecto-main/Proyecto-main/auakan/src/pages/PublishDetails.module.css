@@ -1,0 +1,38 @@
+.DetailsContainer{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.col{
+    max-width: 400px;
+    margin: 15px;
+    height: auto;
+    height: 80%;   
+}
+
+.publicimage{
+    border-radius: 15px;
+}
+
+.pubdet{
+    font-size: 1.5rem;
+}
+
+.firstItem{
+    margin-top: 0;
+}
+.leyendas{
+    font-size: 1.8rem;
+}
+
+.botonescontainer{
+    font-size: 1.8rem;
+    margin: 20px;
+    justify-content: center;
+    text-align: center;
+    border-radius: 30px;
+    width: 90%;
+    height:50px;
+}
+

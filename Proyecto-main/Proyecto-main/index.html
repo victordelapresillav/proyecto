@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tabla de usuarios</title>
+    <style>
+        /* Estilos para la tabla */
+        table {
+            margin: 0 auto;
+            /* Centrar la tabla horizontalmente */
+            border-collapse: collapse;
+            /* Colapsar los bordes de las celdas */
+            width: 80%;
+            /* Ajustar el ancho de la tabla */
+        }
+
+        th,
+        td {
+            padding: 12px;
+            /* Añadir espacio alrededor del contenido de las celdas */
+            text-align: center;
+            /* Centrar el texto en las celdas */
+            border: 1px solid #ddd;
+            /* Añadir bordes a las celdas */
+        }
+
+        th {
+            background-color: #f2f2f2;
+            /* Añadir color de fondo a las celdas de encabezado */
+        }
+
+        /* Estilos para el cuerpo de la página */
+        body {
+            background-color: #e6e6e6;
+            /* Añadir un color de fondo para la página */
+            font-family: Arial, sans-serif;
+            /* Añadir una fuente para el texto */
+        }
+
+        h1 {
+            text-align: center;
+            /* Centrar el título de la página */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Publicaciones pendientes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Nombre del producto</th>
+                <th>Detalles del producto</th>
+                <th>Precio del producto</th>
+                <th>Tiempo de entrega del producto</th>
+                <th>Fotografía del producto</th>
+                <th>visible</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        fetch('https://auakanapi.000webhostapp.com/api.php?request=getAnuncios')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector('tbody');
+                data.forEach(producto => {
+                    const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${producto.id}</td>
+            <td>${producto.nombre_prod}</td>
+            <td>${producto.detalles_prod}</td>
+            <td>${producto.precio_prod}</td>
+            <td>${producto.entrega_prod}</td>
+            <td><img src="${producto.fotografia_prod}" alt="Fotografía del producto"></td>
+            <td>
+              <label class="switch">
+                <input type="checkbox" ${producto.visible ? 'checked' : ''} onclick="toggleVisible(${producto.id}, this.checked)">
+                <span class="slider"></span>
+              </label>
+            </td>
+      `;
+
+                    if (producto.visible === "1") {
+                        const requestOptions = {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json;charset=utf-8',
+                                'Authorization': 'Bearer c2hhMjU2Ojg0MDpjY2RjNWE0NzVmNjhkNGUxMjc5MjM4NTc4YzA3YjU4MDAwZjdlNjUwMTcyODdkYjc3Y2NjMTQ0ZWJjYzBiZWY1'
+                            },
+                            body: JSON.stringify({
+                                "title": producto.nombre_prod,
+                                "alias": producto.nombre_prod.toLowerCase().replace(/\s+/g, '-'),
+                                "introtext": producto.detalles_prod,
+                                "state": 0 // Publicar el artículo
+                            })
+                        };
+
+                        fetch('http://localhost/Auakan/api/index.php/v1/content/articles', requestOptions)
+                            .then(response => response.json())
+                            .then(data => console.log(data))
+                            .catch(error => console.error(error));
+                    }
+
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(error => console.error(error));
+
+
+        function toggleVisible(id, visible) {
+            fetch(`https://auakanapi.000webhostapp.com/api.php?request=updateAnuncio&id=${id}&visible=${visible ? 1 : 0}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
+        }
+    </script>
+
+    <style>
+        /* Estilos para el slider */
+        .switch {
+            position: relative;
+            display: inline-block;
+        }

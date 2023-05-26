@@ -1,0 +1,56 @@
+[
+    {
+        "id": "1",
+        "nombre_prod": "Tilapia",
+        "detalles_prod": "A la talla",
+        "precio_prod": "200 MXN",
+        "entrega_prod": "Punto medio",
+        "fotografia_prod": "foto",
+        "visible": "1"
+    },
+    {
+        "id": "2",
+        "nombre_prod": "Camaron",
+        "detalles_prod": "Fresco",
+        "precio_prod": "100",
+        "entrega_prod": "A domicilio",
+        "fotografia_prod": "si",
+        "visible": "1"
+    },
+    {
+        "id": "8",
+        "nombre_prod": "guayabas",
+        "detalles_prod": "rojas",
+        "precio_prod": "20",
+        "entrega_prod": "domicilio",
+        "fotografia_prod": "200 pesos",
+        "visible": "0"
+    },
+    {
+        "id": "9",
+        "nombre_prod": "compuadoras",
+        "detalles_prod": "ryzen",
+        "precio_prod": "2300",
+        "entrega_prod": "punto medio",
+        "fotografia_prod": "si",
+        "visible": "0"
+    },
+    {
+        "id": "10",
+        "nombre_prod": "pantalla",
+        "detalles_prod": "es azul",
+        "precio_prod": "200",
+        "entrega_prod": "entrega a domicilio",
+        "fotografia_prod": "200 pesos",
+        "visible": "0"
+    },
+    {
+        "id": "11",
+        "nombre_prod": "Camarón fresco",
+        "detalles_prod": "Es fresco",
+        "precio_prod": "150",
+        "entrega_prod": "Entrega a domicilio",
+        "fotografia_prod": "Si",
+        "visible": "0"
+    }
+]
