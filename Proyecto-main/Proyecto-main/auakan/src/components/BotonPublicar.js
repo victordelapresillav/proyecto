@@ -1,4 +1,3 @@
-//import React from "react";
 import React, { useEffect, useState } from "react";
 import styles from "../pages/PublishDetails.module.css";
 import { useParams } from "react-router-dom";
@@ -8,7 +7,7 @@ export function BotonPublicar({ tarjetaId, publicado, onPublicar, onRetirar }) {
   const [data, setData] = useState([]);
   const [data2, setData2] = useState([]);
   //const [item, setItem] = useState(null);
-  console.log()
+  //console.log()
   useEffect(() => {
     fetchData()
       .then((result) => {
@@ -28,31 +27,56 @@ export function BotonPublicar({ tarjetaId, publicado, onPublicar, onRetirar }) {
     obj[item.id] = item;
     return obj;
   }, {});
-
   //publicar en joomla
   const handlePublicar = () => {
     onPublicar(tarjetaId);
+    console.log(datapub[tarjetaId].fotografia_prod);
+    ////////
+    const jsonDirecciones = datapub[tarjetaId].fotografia_prod;
+    // Parsear el JSON a un objeto JavaScript
+    const direccionesObjeto = JSON.parse(jsonDirecciones);
+    // Crear un objeto para almacenar las direcciones web
+    let direccionesWeb = {};
+    // Iterar sobre cada dirección en el objeto
+    for (let key in direccionesObjeto) {
+      const direccion = direccionesObjeto[key];
+      // Eliminar las barras invertidas de la dirección
+      const direccionNormalizada = direccion.replace(/\\/g, '');
+      // Guardar la dirección normalizada en el objeto direccionesWeb
+      direccionesWeb[key] = direccionNormalizada;
+    }
+    console.log(direccionesWeb);
+    let imagenesHtml = ""; // Variable para almacenar el código HTML de las imágenes
+
+    // Iterar sobre las direcciones de las fotos en direccionesWeb
+    for (let key in direccionesWeb) {
+      const direccion = direccionesWeb[key];
+      // Agregar el código HTML de la imagen a la variable imagenesHtml
+      imagenesHtml += `<p><img src="${direccion}" width="200" height="150"></p><br/>`;
+    }
+    const productor = `<div><p><strong>Nombre del productor: ${datapub[tarjetaId].nombre}</strong></p></div>`
+    ///////
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", "Bearer c2hhMjU2Ojk1NjpjYTM2NzZlMTQ0YWM0MTE0Y2MzMWZlZGJjMzg0YmVlZDA2YTdjZjYwOTc0YzNhMWMzY2ZiNTI2MWVlODBlYTM3");
-  
+
     let currentAlias = datapub[tarjetaId].id; // Obtener el alias actual
     let categoryId = 13; // Categoría por defecto (camarón)
-  
+
     // Verificar si el nombre del producto contiene "tilapia" o "mojarra"
     const productName = datapub[tarjetaId].nombre_prod.toLowerCase();
     if (productName.includes("tilapia") || productName.includes("mojarra")) {
       categoryId = 12; // Categoría 12 (tilapia)
     }
-  
+
     // Generar un número aleatorio único de 4 dígitos
     let randomNumber = Math.floor(Math.random() * 9000) + 1000;
-  
+
     // Construir el nuevo alias agregando el número aleatorio al final
     let newAlias = `${currentAlias}-${randomNumber}`;
     var raw = JSON.stringify({
       "alias": newAlias, // Usar el nuevo alias
-      "articletext": datapub[tarjetaId].detalles_prod,
+      "articletext": `${datapub[tarjetaId].detalles_prod}\n${imagenesHtml}\n${productor}`,
       "catid": categoryId, // Usar la categoría correspondiente
       "language": "*",
       "metadesc": "",
@@ -61,76 +85,75 @@ export function BotonPublicar({ tarjetaId, publicado, onPublicar, onRetirar }) {
       "state": 1,
       "id": datapub[tarjetaId].id
     });
-  
+
     var requestOptions = {
       method: 'POST',
       headers: myHeaders,
       body: raw,
       redirect: 'follow'
     };
-  
+
     fetch("https://dev.auakan.com/api/index.php/v1/content/articles", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
   };
-  
-  
-  
+
+
   //eliminar la publicación de joomla
   const handleRetirar = () => {
     onRetirar(tarjetaId);
     // Agregar aquí el código para retirar el artículo en Joomla utilizando el endpoint de Joomla
     var myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Authorization", "Bearer c2hhMjU2Ojk1NjpjYTM2NzZlMTQ0YWM0MTE0Y2MzMWZlZGJjMzg0YmVlZDA2YTdjZjYwOTc0YzNhMWMzY2ZiNTI2MWVlODBlYTM3");
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "Bearer c2hhMjU2Ojk1NjpjYTM2NzZlMTQ0YWM0MTE0Y2MzMWZlZGJjMzg0YmVlZDA2YTdjZjYwOTc0YzNhMWMzY2ZiNTI2MWVlODBlYTM3");
 
-var requestOptions = {
-  method: 'GET',
-  headers: myHeaders,
-  redirect: 'follow'
-};
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
 
-var firstId;
+    var firstId;
 
-fetch("https://dev.auakan.com/api/index.php/v1/content/articles", requestOptions)
-  .then(response => response.json())
-  .then(result => {
-    const articles = result.data;
-    if (Array.isArray(articles) && articles.length > 0) {
-      firstId = articles[0].id;
-      console.log(firstId);
+    fetch("https://dev.auakan.com/api/index.php/v1/content/articles", requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        const articles = result.data;
+        if (Array.isArray(articles) && articles.length > 0) {
+          firstId = articles[0].id;
+          console.log(firstId);
 
-      var myHeaders2 = new Headers();
-      myHeaders2.append("Content-Type", "application/json");
-      myHeaders2.append("Authorization", "Bearer c2hhMjU2Ojk1NjpjYTM2NzZlMTQ0YWM0MTE0Y2MzMWZlZGJjMzg0YmVlZDA2YTdjZjYwOTc0YzNhMWMzY2ZiNTI2MWVlODBlYTM3");
+          var myHeaders2 = new Headers();
+          myHeaders2.append("Content-Type", "application/json");
+          myHeaders2.append("Authorization", "Bearer c2hhMjU2Ojk1NjpjYTM2NzZlMTQ0YWM0MTE0Y2MzMWZlZGJjMzg0YmVlZDA2YTdjZjYwOTc0YzNhMWMzY2ZiNTI2MWVlODBlYTM3");
 
-      var raw2 = JSON.stringify({
-        "catid": 12,
-        "title": datapub[tarjetaId].nombre_prod,
-        "state": -2,
-      });
+          var raw2 = JSON.stringify({
+            "catid": 12,
+            "title": datapub[tarjetaId].nombre_prod,
+            "state": -2,
+          });
 
-      var requestOptions2 = {
-        method: 'PATCH',
-        headers: myHeaders2,
-        body: raw2,
-        redirect: 'follow'
-      };
+          var requestOptions2 = {
+            method: 'PATCH',
+            headers: myHeaders2,
+            body: raw2,
+            redirect: 'follow'
+          };
 
-      fetch(`https://dev.auakan.com/api/index.php/v1/content/articles/${firstId}`, requestOptions2)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
-    } else {
-      console.log('No se encontraron artículos.');
-    }
-  })
-  .catch(error => console.log('error', error));
+          fetch(`https://dev.auakan.com/api/index.php/v1/content/articles/${firstId}`, requestOptions2)
+            .then(response => response.text())
+            .then(result => console.log(result))
+            .catch(error => console.log('error', error));
+        } else {
+          console.log('No se encontraron artículos.');
+        }
+      })
+      .catch(error => console.log('error', error));
 
-// No puedes utilizar la constante `firstId` aquí fuera del bloque .then porque el bloque .then se ejecuta de manera asincrónica. Debes usar `firstId` dentro del segundo bloque .then.
+    // No puedes utilizar la constante `firstId` aquí fuera del bloque .then porque el bloque .then se ejecuta de manera asincrónica. Debes usar `firstId` dentro del segundo bloque .then.
 
-};
+  };
 
 
   return (
